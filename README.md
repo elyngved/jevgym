@@ -63,3 +63,7 @@ jevgym plot <kind> <run_dir>... --out <stem>   charts (PNG and SVG) from run dir
 ```
 uv run pytest
 ```
+
+## License
+
+MIT. See [LICENSE](LICENSE).
