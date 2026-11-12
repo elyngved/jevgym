@@ -15,8 +15,9 @@ from jevgym.runlog import CALLS, CONFIG, read_json, read_jsonl
 from jevgym.style import FAINT, INK, MUTED, SURFACE, arm_color, header, noise_band, plt, save, wilson_point
 
 
-def confusion(run_dirs: Sequence[str | Path], out_stem: str | Path) -> list[Path]:
-    """Confusion matrix for one run: cells shaded by share of the true class, labelled with counts."""
+def confusion(run_dirs: Sequence[str | Path], out_stem: str | Path, title: str | None = None) -> list[Path]:
+    """Confusion matrix for one run: cells shaded by share of the true class, labelled with counts.
+    `title` replaces the default "<arm> confusion matrix on <Split> (n=N)"."""
     if len(run_dirs) != 1:
         raise ValueError("confusion takes exactly one run directory")
     run_dir = Path(run_dirs[0])
@@ -53,7 +54,7 @@ def confusion(run_dirs: Sequence[str | Path], out_stem: str | Path) -> list[Path
     ax.grid(which="minor", color=SURFACE, linewidth=2)
 
     lo, hi = s["wilson_95"]
-    header(fig, f"{arm} confusion matrix on {s['split'].capitalize()} (n={s['n']})", [
+    header(fig, title or f"{arm} confusion matrix on {s['split'].capitalize()} (n={s['n']})", [
         "Rows are true classes, columns are predictions; each cell shows the count and the share of its row.",
         f"Diagonal = correct. Accuracy {s['accuracy']:.1%} (95% Wilson {lo:.1%}–{hi:.1%}), "
         f"Brier {s['brier']:.3f}, model {config['model_pin']}.",

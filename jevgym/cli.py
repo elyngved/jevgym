@@ -6,7 +6,7 @@
   jevgym noise <run_dir>... [--write]         noise floor from repeat runs (--write saves runs/noise-floor.json)
   jevgym leakcheck <run_dir>...                Teacher prompts: no Dev text, every example a Train row
   jevgym compare <run_a> <run_b>              paired comparison: Wilson intervals, gap, McNemar, label
-  jevgym plot confusion <run_dir> --out <stem>        confusion matrix -> <stem>.png and <stem>.svg
+  jevgym plot confusion <run_dir> --out <stem> [--title T]   confusion matrix -> <stem>.png and <stem>.svg
   jevgym plot noise-repeats <run_dir>... --out <stem> repeat accuracies with Wilson intervals and floor band
   jevgym plot row-flips <run_dir>... --out <stem>     rows whose prediction changes across repeats
   jevgym plot arms <run_dir>... --out <stem>          accuracy (Wilson, floor band) and Brier per arm
@@ -176,6 +176,10 @@ def cmd_plot(a: argparse.Namespace) -> int:
         kw["ref"] = a.ref
     if a.kind == "confusion-change" and a.best_of:
         kw["best_of"] = a.best_of
+    if a.title:
+        if a.kind != "confusion":
+            raise SystemExit("--title is only supported by plot confusion")
+        kw["title"] = a.title
     paths = getattr(plot, a.kind.replace("-", "_"))(run_dirs, stem, **kw)
     for p in paths:
         print(f"wrote {p}")
@@ -227,6 +231,7 @@ def main(argv: list[str] | None = None) -> int:
     pl.add_argument("--out", required=True, help="output path stem (without extension)")
     pl.add_argument("--ref", default=None, help="seeds: arm the noise-floor band is centred on (default: the floor's arm)")
     pl.add_argument("--best-of", type=int, default=0, help="confusion-change: run B was picked as best of N")
+    pl.add_argument("--title", default=None, help="confusion: replace the default chart title")
     pl.set_defaults(func=cmd_plot)
 
     a = p.parse_args(argv)
