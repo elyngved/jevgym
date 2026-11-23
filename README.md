@@ -1,5 +1,7 @@
 # JevGym
 
+> **Work in progress.** JevGym is under active development. Interfaces, commands and file formats may change without notice, and there is no tagged release yet.
+
 Measure and improve prompts for [Jev](https://typesafe.ai) Choice questions, with statistics you can trust.
 
 JevGym evaluates a Prompt (Instructions plus one Description per option) on a labelled dataset and reports accuracy with a 95% Wilson interval, Brier score and log loss. It compares two Prompts on the same rows with a paired McNemar test, measured against the run-to-run noise floor. Every run is logged and can be rebuilt offline.
